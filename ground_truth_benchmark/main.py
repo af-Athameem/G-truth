@@ -36,7 +36,7 @@ else:
             st.session_state["authenticated"] = True
             st.session_state["username"] = username
             st.success(f"🎉 Welcome, {username}!")
-            # st.rerun() 
+            st.rerun() 
         else:
             st.error("❌ Invalid username or password.")
 
