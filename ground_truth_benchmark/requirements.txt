@@ -10,4 +10,4 @@ requests
 xlsxwriter
 streamlit_authenticator
 bcrypt
-hashlib
+
