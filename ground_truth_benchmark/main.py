@@ -36,7 +36,6 @@ else:
             st.session_state["authenticated"] = True
             st.session_state["username"] = username
             st.success(f"🎉 Welcome, {username}!")
-            st.rerun()  # Refresh to apply session state
         else:
             st.error("❌ Invalid username or password.")
 
@@ -46,4 +45,3 @@ if st.session_state["authenticated"]:
     if st.sidebar.button("Logout"):
         st.session_state["authenticated"] = False
         st.session_state["username"] = None
-        st.rerun()  # Refresh to log out
