@@ -1,0 +1,15 @@
+streamlit
+pandas
+sqlalchemy
+psycopg2-binary
+office365-rest-python-client
+streamlit-option-menu
+PyYAML
+bcrypt
+watchdog
+requests
+xlsxwriter
+streamlit_authenticator
+bcrypt
+yaml
+hashlib
