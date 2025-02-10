@@ -6,7 +6,7 @@ from datetime import datetime
 #from database import Base
 
 # Database connection
-DATABASE_URL = "postgresql://affan:postgres@localhost/rag_eval"
+DATABASE_URL = "postgresql://neondb_owner:npg_Pf3SdCBQpA8q@ep-winter-grass-a563m20i-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
