@@ -1,5 +1,5 @@
 import streamlit as st
-import yaml
+# import yaml
 import hashlib
 from sqlalchemy.orm import Session
 from models_copy import Document, Tag, TestCase, Users, SessionLocal
@@ -14,11 +14,11 @@ def get_db():
     finally:
         db.close()
 
-# Load Configuration (e.g., SharePoint credentials)
-def load_config():
-    """Loads configuration from config.yaml."""
-    with open("config.yaml", "r") as f:
-        return yaml.safe_load(f)
+# # Load Configuration (e.g., SharePoint credentials)
+# def load_config():
+#     """Loads configuration from config.yaml."""
+#     with open("config.yaml", "r") as f:
+#         return yaml.safe_load(f)
 
 # Password Hashing
 def hash_password(password):
