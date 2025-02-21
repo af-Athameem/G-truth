@@ -14,10 +14,10 @@ st.markdown(
 )
 
 # Microsoft Graph API Credentials
-SHAREPOINT_URL = "https://thameema.sharepoint.com/sites/Test"
-CLIENT_ID = "4a9e0273-dbbf-4bf7-b999-accd993df5a4"
-CLIENT_SECRET = "WqH8Q~5RFlvA0amtkLbWeFg7azcp6pRoDwe77aB-"
-TENANT_ID = "cf907539-ab94-4499-b96f-6bbac1b7cf0c"
+SHAREPOINT_URL = "https://qlytics.sharepoint.com/sites/AmpliforceHQ"
+CLIENT_ID = "7c062626-f6c4-4492-94ca-77df6dcdb7cb"
+CLIENT_SECRET = "AMG8Q~JQBPqqT6fsTA36dtfLDUL0KtHnZo0~qb_4"
+TENANT_ID = "6cf36f72-ee29-4ef7-8dc3-585f85b50175"
 GRAPH_API_BASE_URL = "https://graph.microsoft.com/v1.0"
 TOKEN_URL = f"https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token"
 
@@ -43,7 +43,7 @@ def get_access_token():
 # Step 2: Get SharePoint Site ID
 def get_site_id(token):
     headers = {"Authorization": f"Bearer {token}"}
-    site_url = f"{GRAPH_API_BASE_URL}/sites/thameema.sharepoint.com:/sites/Test"
+    site_url = f"{GRAPH_API_BASE_URL}/sites/qlytics.sharepoint.com:/sites/AmpliforceHQ"
 
     response = requests.get(site_url, headers=headers)
     site_info = response.json()
