@@ -14,10 +14,10 @@ st.markdown(
 )
 
 # Microsoft Graph API Credentials
-SHAREPOINT_URL = ""
-CLIENT_ID = ""
-CLIENT_SECRET = ""
-TENANT_ID = ""
+SHAREPOINT_URL = "https://qlytics.sharepoint.com/sites/AmpliforceHQ"
+CLIENT_ID = "7c062626-f6c4-4492-94ca-77df6dcdb7cb"
+CLIENT_SECRET = "AMG8Q~JQBPqqT6fsTA36dtfLDUL0KtHnZo0~qb_4"
+TENANT_ID = "6cf36f72-ee29-4ef7-8dc3-585f85b50175"
 GRAPH_API_BASE_URL = "https://graph.microsoft.com/v1.0"
 TOKEN_URL = f"https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token"
 
