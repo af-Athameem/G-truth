@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 from utils import authenticate_user, get_db  # Import helper functions
 
 # Hide sidebar
@@ -23,7 +24,8 @@ if "authenticated" not in st.session_state:
 # Redirect if already logged in
 if st.session_state["authenticated"]:
     st.success(f"Welcome back, {st.session_state['username']}!")
-    # st.switch_page("pages/login.py")  # Redirect to a protected page
+    st.switch_page("pages/login.py")  # Redirect to a protected page
+    time.sleep(2)
     st.switch_page("pages/app.py")
 
 
