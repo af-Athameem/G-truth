@@ -70,7 +70,13 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# st.title("GROUND TRUTH BENCHMARK")
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
 
 # Sidebar for navigation
 with st.sidebar:
