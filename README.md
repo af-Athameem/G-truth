@@ -29,5 +29,7 @@ The Ground Truth Benchmark is a Streamlit web application designed to manage a c
 │   │── rate_limiter.py        # Rate limiting logic for security
 │
 │── requirements.txt            # Python dependencies
+│
+│── README.md
 
 
