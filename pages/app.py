@@ -177,9 +177,9 @@ else:
             st.session_state['form_submitted'] = False
 
         # Input fields
-        question = st.text_area("Question", help="Enter the question text", key="question_input")
-        ideal_answer = st.text_area("Ideal Answer", help="Enter the expected answer", key="ideal_answer_input")
-        agent_name = st.text_input("Agent Name", help="Enter the agent name", key="agent_name_input")
+        question = st.text_area("Question", key="question_input")
+        ideal_answer = st.text_area("Ideal Answer", key="ideal_answer_input")
+        agent_name = st.text_input("Agent Name", key="agent_name_input")
 
         # Document selection section
         libraries = get_document_libraries(TOKEN, SITE_ID)
