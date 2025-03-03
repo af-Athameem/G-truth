@@ -27,7 +27,7 @@ logger = logging.getLogger('ground_truth_benchmark')
 st.set_page_config(page_title="Ground Truth Benchmark", layout="wide", initial_sidebar_state="expanded")
 
 # Configuration
-QUESTIONS = read_json_from_s3("questions.json") or []
+QUESTIONS = read_json_from_s3("submitted_questions.json") or []
 
 # Authentication check
 try:
