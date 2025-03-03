@@ -37,11 +37,6 @@ if "authenticated" not in st.session_state:
 
 if check_session_timeout():
     st.warning("Your session has expired due to inactivity. Please log in again.")
-
-# redirect if already logged in
-if st.session_state["authenticated"]:
-    st.success(f"Welcome back, {st.session_state['username']}!")
-    st.switch_page("pages/login.py")
     
 else:
     # Login Form
