@@ -16,9 +16,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-load_dotenv('.env')
-
-# Step 3: Authenticate & Store Credentials in Session
+#Authenticate & Store Credentials in Session
 def authentication():
     """Authenticate using Microsoft Graph API"""
     try:
