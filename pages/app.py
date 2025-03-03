@@ -54,7 +54,7 @@ st.markdown("""
 if 'storage_preference' not in st.session_state:
     st.session_state['storage_preference'] = 'Both'
 
-# Helper functions
+# Need to moves these to functions 
 def get_files_from_storage():
     """Get files from both SharePoint and S3 storage."""
     files = []
