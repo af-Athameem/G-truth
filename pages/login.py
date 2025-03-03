@@ -47,7 +47,6 @@ else:
     if "token" not in st.session_state or "site_id" not in st.session_state:
         with st.spinner("Authenticating with SharePoint..."):
             if authentication():
-                st.success("SharePoint Authentication Successful!")
                 st.switch_page("pages/app.py")
             else:
                 st.error("SharePoint Authentication Failed!")
