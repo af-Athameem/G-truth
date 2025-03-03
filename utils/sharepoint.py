@@ -271,3 +271,26 @@ def add_question(file_path, question_data):
     questions = load_json_db_file(file_path)
     questions.append(question_data)
     save_json_db_file(file_path, questions)
+
+def get_all_tags_from_list(questions_list):
+    """Get all unique tags from the questions list."""
+    all_tags = set()
+    
+    for question in questions_list:
+        if "Tags" in question and question["Tags"]:
+            for tag in question["Tags"]:
+                all_tags.add(tag)
+                
+    return sorted(list(all_tags))
+
+def get_all_documents_from_list(questions_list):
+    """Get all unique document names from the questions list."""
+    all_documents = set()
+    
+    for question in questions_list:
+        if "Reference Documents" in question:
+            for doc in question["Reference Documents"]:
+                if "name" in doc and doc["name"]:
+                    all_documents.add(doc["name"])
+                
+    return sorted(list(all_documents))
