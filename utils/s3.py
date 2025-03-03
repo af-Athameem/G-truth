@@ -1,11 +1,8 @@
 import boto3
 import json
-import logging
 import os
 from botocore.exceptions import ClientError
 import streamlit as st
-
-logger = logging.getLogger('s3_utils')
 
 # Load AWS credentials from Streamlit secrets
 AWS_ACCESS_KEY = st.secrets["aws"]["AWS_ACCESS_KEY_ID"]
@@ -13,7 +10,7 @@ AWS_SECRET_KEY = st.secrets["aws"]["AWS_SECRET_ACCESS_KEY"]
 AWS_REGION = st.secrets["aws"]["AWS_REGION"]
 BUCKET_NAME = st.secrets["aws"]["S3_BUCKET_NAME"]
 
-# Folder in S3
+# Define the folder in S3
 S3_FOLDER = "json-db/"
 
 # Initialize S3 client
@@ -24,8 +21,8 @@ try:
         aws_secret_access_key=AWS_SECRET_KEY,
         region_name=AWS_REGION
     )
-except Exception as e:
-    logger.error(f"Failed to initialize S3 client: {str(e)}")
+except Exception:
+    st.error("Error connecting to S3. Please check your credentials.")
 
 def read_json_from_s3(file_name):
     """Read and parse a JSON file from S3."""
@@ -41,12 +38,10 @@ def read_json_from_s3(file_name):
                 return []
             return {}
         else:
-            logger.error(f"Error reading {s3_key} from S3: {str(e)}")
             if file_name.endswith("questions.json") or "questions" in file_name:
                 return []
             return {}
-    except Exception as e:
-        logger.error(f"Error reading {s3_key} from S3: {str(e)}")
+    except Exception:
         if file_name.endswith("questions.json") or "questions" in file_name:
             return []
         return {}
@@ -60,9 +55,10 @@ def write_json_to_s3(file_name, data):
             Key=s3_key,
             Body=json.dumps(data, indent=4)
         )
+        st.success(f"Successfully updated {file_name}!")
         return True
-    except Exception as e:
-        logger.error(f"Error writing {s3_key} to S3: {str(e)}")
+    except Exception:
+        st.error(f"Error writing {file_name} to S3")
         return False
 
 def upload_file(file_path, target_filename=None, bucket=BUCKET_NAME):
@@ -74,14 +70,12 @@ def upload_file(file_path, target_filename=None, bucket=BUCKET_NAME):
             s3_client.upload_fileobj(file_data, bucket, key)
         return True
     except FileNotFoundError:
-        logger.error(f"File not found: {file_path}")
         return False
-    except Exception as e:
-        logger.error(f"Error uploading to S3: {str(e)}")
+    except Exception:
         return False
 
 def list_files(prefix="", bucket=BUCKET_NAME):
-    """List all file names in an S3 bucket, excpet json-db folder files."""
+    """List all file names in an S3 bucket, excluding json-db/ folder files."""
     try:
         response = s3_client.list_objects_v2(Bucket=bucket, Prefix=prefix)
         
@@ -89,13 +83,12 @@ def list_files(prefix="", bucket=BUCKET_NAME):
             files = []
             for obj in response["Contents"]:
                 key = obj["Key"]
-                
+                # Skip files in the json-db/ folder
                 if not key.startswith(S3_FOLDER):
                     files.append(os.path.basename(key))
             return files
         return []
-    except Exception as e:
-        logger.error(f"Error listing S3 files: {str(e)}")
+    except Exception:
         return []
 
 def file_exists(file_name, bucket=BUCKET_NAME):
