@@ -1,5 +1,8 @@
 import boto3
 import json
+import logging
+import os
+from botocore.exceptions import ClientError  # Add this import
 import streamlit as st
 
 # Load AWS credentials from Streamlit secrets
@@ -25,6 +28,15 @@ def read_json_from_s3(file_name):
     try:
         response = s3_client.get_object(Bucket=BUCKET_NAME, Key=s3_key)
         return json.loads(response["Body"].read().decode("utf-8"))
+    except ClientError as e:
+        if e.response['Error']['Code'] == 'NoSuchKey':
+            # File doesn't exist yet, return empty data instead of error
+            st.warning(f"File {file_name} not found in S3. Creating new file.")
+            return {}
+        else:
+            # Log other errors
+            st.error(f"Error reading {s3_key} from S3: {str(e)}")
+            return {}
     except Exception as e:
         st.error(f"Error reading {s3_key} from S3: {str(e)}")
         return {}
@@ -41,10 +53,6 @@ def write_json_to_s3(file_name, data):
         st.success(f"Successfully updated {s3_key} in S3!")
     except Exception as e:
         st.error(f"Error writing {s3_key} to S3: {str(e)}")
-
-# Load JSON files
-users = read_json_from_s3("users.json")
-questions = read_json_from_s3("submitted_questions.json")
 
 def upload_file(file_path, target_filename=None, bucket=BUCKET_NAME):
     """
