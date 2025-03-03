@@ -137,6 +137,7 @@ def upload_file(file_path, target_filename=None, bucket=BUCKET_NAME):
 def list_files(prefix="", bucket=BUCKET_NAME):
     """
     List all file names in an S3 bucket, optionally filtered by a prefix.
+    Excludes files in the json-db/ folder.
     
     Args:
         prefix: Optional prefix to filter by.
@@ -149,7 +150,15 @@ def list_files(prefix="", bucket=BUCKET_NAME):
         response = s3_client.list_objects_v2(Bucket=bucket, Prefix=prefix)
         
         if "Contents" in response:
-            files = [os.path.basename(obj["Key"]) for obj in response["Contents"]]
+            # Filter out items in the json-db/ folder
+            files = []
+            for obj in response["Contents"]:
+                key = obj["Key"]
+                # Skip files in the json-db/ folder
+                if not key.startswith(S3_FOLDER):
+                    # Extract just the filename without path
+                    files.append(os.path.basename(key))
+            
             logger.info(f"Found {len(files)} files with prefix '{prefix}'")
             return files
         
