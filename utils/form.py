@@ -1,31 +1,23 @@
 import streamlit as st
 
 def add_document():
-    """
-    Add a new document reference to the session state
-    """
+    """Add a new document reference to the session state"""
     if 'reference_docs' not in st.session_state:
         st.session_state['reference_docs'] = ["Reference Document 1"]
     else:
         st.session_state['reference_docs'].append(f"Reference Document {len(st.session_state['reference_docs']) + 1}")
 
-def remove_document(idx):
-    """
-    Remove a document reference at the specified index
-    
-    Args:
-        idx (int): Index of the document to remove
-    """
-    if 'reference_docs' in st.session_state and idx < len(st.session_state['reference_docs']):
-        st.session_state['reference_docs'].pop(idx)
+def remove_document(index):
+    """Remove a document reference at the specified index"""
+    if 'reference_docs' in st.session_state and index < len(st.session_state['reference_docs']):
+        st.session_state['reference_docs'].pop(index)
         
         # Clean up session state
         keys_to_remove = []
         for key in st.session_state.keys():
-            if key.startswith(f'doc_{idx}') or key.startswith(f'pages_{idx}'):
+            if key.startswith(f'doc_{index}') or key.startswith(f'pages_{index}'):
                 keys_to_remove.append(key)
         
-        # Remove the keys
         for key in keys_to_remove:
             if key in st.session_state:
                 del st.session_state[key]
@@ -50,12 +42,9 @@ def remove_document(idx):
             st.session_state[key] = value
 
 def handle_new_tag():
-    """
-    Add a new tag from the input field to the selected tags
-    """
+    """Add a new tag from the input field to the selected tags"""
     if 'new_tag_input' in st.session_state and st.session_state['new_tag_input'].strip() and 'selected_tags' in st.session_state:
         new_tag = st.session_state['new_tag_input'].strip()
         if new_tag not in st.session_state['selected_tags']:
             st.session_state['selected_tags'].append(new_tag)
-        st.session_state['new_tag_input'] = ""  # Clear the input field
-        
+        st.session_state['new_tag_input'] = ""
