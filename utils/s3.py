@@ -1,8 +1,10 @@
+import streamlit as st
 import boto3
 import json
 import os
+
 from botocore.exceptions import ClientError
-import streamlit as st
+
 
 # Load AWS credentials 
 AWS_ACCESS_KEY = st.secrets["aws"]["AWS_ACCESS_KEY_ID"]
