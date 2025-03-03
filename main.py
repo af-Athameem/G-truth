@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-from utils import authenticate_user, check_session_timeout
+from utils.auth import authenticate_user, check_session_timeout
 
 st.set_page_config(
     page_title="Ground Truth Benchmark",
