@@ -25,9 +25,7 @@ GroundTruthBenchmark/
 │   │── s3.py                  # AWS S3 interaction functionality
 │   │── sharepoint.py          # SharePoint integration via Microsoft Graph API
 │   │── form.py                # Form handling utilities
-│   │── session.py             # Session management & timeout handling
-│   │── rate_limiter.py        # Rate limiting logic for security
-│
+│   
 │── requirements.txt           # Python dependencies
 │
 │── README.md
