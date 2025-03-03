@@ -11,7 +11,7 @@ from utils import (
     upload_to_eval_benchmark, load_json_db_file, get_all_tags, add_question,
     add_document, remove_document, handle_new_tag
 )
-from utils.s3 import upload_file, list_files, file_exists
+from utils.s3 import upload_file, list_files, file_exists, read_json_from_s3, write_json_to_s3
 
 # Configure logging
 logging.basicConfig(
@@ -27,11 +27,7 @@ logger = logging.getLogger('ground_truth_benchmark')
 st.set_page_config(page_title="Ground Truth Benchmark", layout="wide", initial_sidebar_state="expanded")
 
 # Configuration
-QUESTIONS = st.secrets["database"]["QUESTIONS"]
-DB_DIR = os.path.dirname(QUESTIONS)
-
-# Create necessary directories
-os.makedirs(DB_DIR, exist_ok=True)
+QUESTIONS = read_json_from_s3("questions.json") or []
 
 # Authentication check
 try:
@@ -333,7 +329,8 @@ else:
                     }
 
                     # Add to database
-                    add_question(QUESTIONS, new_entry)
+                    QUESTIONS.append(new_entry)
+                    write_json_to_s3("questions.json", QUESTIONS)
                     
                     st.session_state['form_submitted'] = True
                     st.rerun()
@@ -347,7 +344,7 @@ else:
     elif option == "View Questions":
         st.header("Ground Truth Library")
 
-        questions = load_json_db_file(QUESTIONS)
+        questions = QUESTIONS
         
         if questions:
             data = {
