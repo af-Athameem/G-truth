@@ -14,13 +14,13 @@ The Ground Truth Benchmark is a Streamlit web application designed to manage a c
 ```
 GroundTruthBenchmark/
 │── main.py                    # Entry point with login functionality
-│── pages/                      # Streamlit pages directory
+│── pages/                     # Streamlit pages directory
 │   │── app.py                 # Main application with question & document management
 │   │── login.py               # Microsoft Graph Authentication
 │   │── dashboard.py           # Dashboard for benchmark questions & docs
 │   │── settings.py            # User settings & profile management
 │
-│── utils/                      # Utility functions & reusable components
+│── utils/                     # Utility functions & reusable components
 │   │── auth.py                # Authentication-related functions
 │   │── s3.py                  # AWS S3 interaction functionality
 │   │── sharepoint.py          # SharePoint integration via Microsoft Graph API
@@ -28,7 +28,7 @@ GroundTruthBenchmark/
 │   │── session.py             # Session management & timeout handling
 │   │── rate_limiter.py        # Rate limiting logic for security
 │
-│── requirements.txt            # Python dependencies
+│── requirements.txt           # Python dependencies
 │
 │── README.md
 ```
