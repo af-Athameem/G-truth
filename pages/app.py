@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import os
-import logging
 import tempfile
 from streamlit_option_menu import option_menu
 from utils import (
@@ -10,10 +9,6 @@ from utils import (
     add_document, remove_document, handle_new_tag
 )
 from utils.s3 import upload_file, list_files, read_json_from_s3, write_json_to_s3
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger('ground_truth_benchmark')
 
 # Page configuration
 st.set_page_config(page_title="Ground Truth Benchmark", layout="wide", initial_sidebar_state="expanded")
@@ -447,13 +442,13 @@ else:
                         # Show successful uploads
                         with st.expander("Successful uploads"):
                             for filename, storages in successful_files:
-                                st.write(f"✅ {filename} - Uploaded to: {', '.join(storages)}")
+                                st.write(f"{filename} - Uploaded to: {', '.join(storages)}")
                         
                         # Show failed uploads
                         if failed_files:
                             with st.expander("Failed uploads"):
                                 for filename, storages in failed_files:
-                                    st.write(f"❌ {filename} - Failed to upload to: {', '.join(storages)}")
+                                    st.write(f"{filename} - Failed to upload to: {', '.join(storages)}")
                     else:
                         st.error("All uploads failed. Please check your connection and try again.")
                     
