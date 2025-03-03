@@ -2,25 +2,17 @@ import streamlit as st
 import pandas as pd
 import os
 import logging
-import traceback
 import tempfile
 from streamlit_option_menu import option_menu
 from utils import (
-    # Core functions
     logout, get_document_libraries, get_files_in_eval_benchmark, get_file_item,
     upload_to_eval_benchmark, get_all_tags_from_list, 
     add_document, remove_document, handle_new_tag
 )
-from utils.s3 import upload_file, list_files, file_exists, read_json_from_s3, write_json_to_s3
+from utils.s3 import upload_file, list_files, read_json_from_s3, write_json_to_s3
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler()
-    ]
-)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('ground_truth_benchmark')
 
 # Page configuration
@@ -32,19 +24,14 @@ try:
     if QUESTIONS is None or not isinstance(QUESTIONS, list):
         QUESTIONS = []
         write_json_to_s3("submitted_questions.json", [])
-except Exception as e:
-    logger.error(f"Error loading questions database: {str(e)}")
+except Exception:
     QUESTIONS = []
     write_json_to_s3("submitted_questions.json", [])
 
 # Authentication check
-try:
-    if "authenticated" not in st.session_state or not st.session_state["authenticated"]:
-        st.warning("Please log in first.")
-        st.switch_page("pages/login.py")
-except Exception as e:
-    logger.error(f"Error during authentication check: {str(e)}")
-    st.error("Authentication error. Please try refreshing the page or contact support.")
+if "authenticated" not in st.session_state or not st.session_state["authenticated"]:
+    st.warning("Please log in first.")
+    st.switch_page("pages/login.py")
 
 # Apply custom styling
 st.markdown("""
@@ -115,28 +102,24 @@ def upload_to_storage(file_name, file_bytes):
         try:
             sharepoint_result = upload_to_eval_benchmark(TOKEN, SITE_ID, file_name, file_bytes)
             results.append(("SharePoint", sharepoint_result))
-        except Exception as e:
-            logger.error(f"SharePoint upload failed: {str(e)}")
+        except Exception:
             results.append(("SharePoint", False))
 
     try:
-        # Create a secure temporary file
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
             temp_file.write(file_bytes)
         
-        # Upload from the temporary file
         s3_result = upload_file(temp_file_path, target_filename=file_name)  
         results.append(("S3", s3_result))
-    except Exception as e:
-        logger.error(f"S3 upload failed: {str(e)}")
+    except Exception:
         results.append(("S3", False))
     finally:
         try:
             if os.path.exists(temp_file_path):
                 os.unlink(temp_file_path)
-        except Exception as e:
-            logger.warning(f"Failed to remove temp file: {str(e)}")
+        except Exception:
+            pass
 
     return results
 
@@ -261,7 +244,7 @@ else:
                 
                 with cols[1]:
                     if st.button("-", key=f'remove_{idx}', help="Remove this document", on_click=remove_document, args=(idx,)):
-                        pass  # The actual removal happens in the callback
+                        pass
         
         # Add document button
         st.button("+ ADD DOCUMENT", key="add_doc_btn", on_click=add_document)
@@ -302,51 +285,45 @@ else:
             elif not agent_name.strip():
                 st.error("Agent Name is required.")
             else:
-                try:
-                    reference_documents = []
-                    for idx, _ in enumerate(st.session_state['reference_docs']):
-                        file_name = st.session_state.get(f'doc_{idx}')
-                        pages = st.session_state.get(f'pages_{idx}', "")
-                        if file_name:
-                            # Find all sources where this file exists
-                            file_sources = []
-                            for file in st.session_state['all_files']:
-                                if file["name"] == file_name:
-                                    file_sources.append(file["source"])
-                                    
-                            file_source = ", ".join(sorted(set(file_sources))) if file_sources else "Unknown"
-                                    
-                            reference_documents.append({
-                                "name": file_name,
-                                "pages": pages,
-                                "source": file_source
-                            })
+                reference_documents = []
+                for idx, _ in enumerate(st.session_state['reference_docs']):
+                    file_name = st.session_state.get(f'doc_{idx}')
+                    pages = st.session_state.get(f'pages_{idx}', "")
+                    if file_name:
+                        # Find all sources where this file exists
+                        file_sources = []
+                        for file in st.session_state['all_files']:
+                            if file["name"] == file_name:
+                                file_sources.append(file["source"])
+                                
+                        file_source = ", ".join(sorted(set(file_sources))) if file_sources else "Unknown"
+                                
+                        reference_documents.append({
+                            "name": file_name,
+                            "pages": pages,
+                            "source": file_source
+                        })
 
-                    question_tags = st.session_state['selected_tags'].copy()
-                    submitted_by = st.session_state.get("username", "Unknown")
-                    
-                    # Create new question entry
-                    new_entry = {
-                        "Question": question,
-                        "Ideal Answer": ideal_answer,
-                        "Reference Documents": reference_documents,
-                        "Agent Name": agent_name,
-                        "Tags": question_tags,
-                        "Created On": pd.Timestamp.now().strftime("%Y-%m-%d"),
-                        "Submitted By": submitted_by 
-                    }
+                question_tags = st.session_state['selected_tags'].copy()
+                submitted_by = st.session_state.get("username", "Unknown")
+                
+                # Create new question entry
+                new_entry = {
+                    "Question": question,
+                    "Ideal Answer": ideal_answer,
+                    "Reference Documents": reference_documents,
+                    "Agent Name": agent_name,
+                    "Tags": question_tags,
+                    "Created On": pd.Timestamp.now().strftime("%Y-%m-%d"),
+                    "Submitted By": submitted_by 
+                }
 
-                    # Add to database
-                    QUESTIONS.append(new_entry)
-                    write_json_to_s3("submitted_questions.json", QUESTIONS)
-                    
-                    st.session_state['form_submitted'] = True
-                    st.rerun()
-
-                except Exception as e:
-                    error_msg = f"An error occurred: {str(e)}"
-                    logger.error(f"{error_msg}\n{traceback.format_exc()}")
-                    st.error(error_msg)
+                # Add to database
+                QUESTIONS.append(new_entry)
+                write_json_to_s3("submitted_questions.json", QUESTIONS)
+                
+                st.session_state['form_submitted'] = True
+                st.rerun()
 
     # VIEW QUESTIONS PAGE
     elif option == "View Questions":
@@ -425,36 +402,59 @@ else:
             else:
                 st.info("No files found. Use the 'Upload New File' tab to add files.")
 
-        # UPLOAD FILE PAGE
+       # UPLOAD FILE PAGE
         elif selected_page == "Upload New File":
-            uploaded_file = st.file_uploader("Choose a file to upload", type=None)
+            uploaded_files = st.file_uploader("Choose files to upload", type=None, accept_multiple_files=True)
 
-            if uploaded_file:
-                file_bytes = uploaded_file.getvalue()
-                original_filename = uploaded_file.name
-                upload_filename = get_unique_filename(original_filename)
-
-                file_info = f"**File Ready to Upload:** {upload_filename}"
-                if upload_filename != original_filename:
-                    file_info += f" - **Renamed from {original_filename} to avoid overwriting**"
-
-                st.write(file_info)
-
-                if st.button("Upload File"):
-                    with st.spinner("Uploading file. Please wait..."):
-                        upload_results = upload_to_storage(upload_filename, file_bytes)
-
-                    successful_uploads = [storage for storage, result in upload_results if result]
-                    failed_uploads = [storage for storage, result in upload_results if not result]
+            if uploaded_files:
+                files_to_upload = []
+                
+                # Preview files and show renamed info
+                st.subheader("Files Ready to Upload:")
+                for uploaded_file in uploaded_files:
+                    file_bytes = uploaded_file.getvalue()
+                    original_filename = uploaded_file.name
+                    upload_filename = get_unique_filename(original_filename)
                     
-                    if not failed_uploads:
-                        st.success(f"File '{upload_filename}' uploaded successfully to {', '.join(successful_uploads)}.")
-                        logger.info(f"File '{upload_filename}' uploaded successfully to {', '.join(successful_uploads)}.")
-                        st.session_state['refresh_files'] = True  
-                    elif successful_uploads:
-                        st.warning(f"File uploaded to {', '.join(successful_uploads)} but failed for {', '.join(failed_uploads)}.")
-                        logger.warning(f"File '{upload_filename}' upload partially failed: success={successful_uploads}, failed={failed_uploads}")
-                        st.session_state['refresh_files'] = True  
+                    file_info = f"**{upload_filename}**"
+                    if upload_filename != original_filename:
+                        file_info += f" (renamed from {original_filename})"
+                    
+                    st.write(file_info)
+                    files_to_upload.append((upload_filename, file_bytes))
+
+                if st.button("Upload All Files"):
+                    with st.spinner(f"Uploading {len(files_to_upload)} files..."):
+                        successful_files = []
+                        failed_files = []
+                        
+                        for filename, file_bytes in files_to_upload:
+                            upload_results = upload_to_storage(filename, file_bytes)
+                            successful_uploads = [storage for storage, result in upload_results if result]
+                            failed_uploads = [storage for storage, result in upload_results if not result]
+                            
+                            if successful_uploads:
+                                successful_files.append((filename, successful_uploads))
+                            if failed_uploads:
+                                failed_files.append((filename, failed_uploads))
+                    
+                    # Display upload summary
+                    if len(successful_files) == len(files_to_upload):
+                        st.success(f"All {len(successful_files)} files uploaded successfully.")
+                    elif successful_files:
+                        st.warning(f"{len(successful_files)} of {len(files_to_upload)} files uploaded successfully.")
+                        
+                        # Show successful uploads
+                        with st.expander("Successful uploads"):
+                            for filename, storages in successful_files:
+                                st.write(f"✅ {filename} - Uploaded to: {', '.join(storages)}")
+                        
+                        # Show failed uploads
+                        if failed_files:
+                            with st.expander("Failed uploads"):
+                                for filename, storages in failed_files:
+                                    st.write(f"❌ {filename} - Failed to upload to: {', '.join(storages)}")
                     else:
-                        st.error("Failed to upload file to any storage location. Please try again or contact support.")
-                        logger.error(f"File '{upload_filename}' upload failed completely.")
+                        st.error("All uploads failed. Please check your connection and try again.")
+                    
+                    st.session_state['refresh_files'] = True
