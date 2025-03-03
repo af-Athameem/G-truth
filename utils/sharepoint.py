@@ -212,68 +212,12 @@ def upload_to_eval_benchmark(token, site_id, file_name, file_content):
                     
                 return False
 
-# JSON Question Database Functions
-def load_json_db_file(file_path):
-    """Load questions from a JSON file"""
-    if os.path.exists(file_path):
-        try:
-            with open(file_path, "r", encoding="utf-8") as file:
-                return json.load(file)
-        except json.JSONDecodeError:
-            return []
-    else:
-        # Create the parent directory if it doesn't exist
-        parent_dir = os.path.dirname(file_path)
-        if parent_dir and not os.path.exists(parent_dir):
-            os.makedirs(parent_dir, exist_ok=True)
-            
-        with open(file_path, "w", encoding="utf-8") as file:
-            json.dump([], file)
-        return []
-
-def save_json_db_file(file_path, data):
-    """Save questions to a JSON file"""
-    # Create the parent directory if it doesn't exist
-    parent_dir = os.path.dirname(file_path)
-    if parent_dir and not os.path.exists(parent_dir):
-        os.makedirs(parent_dir, exist_ok=True)
-        
-    with open(file_path, "w", encoding="utf-8") as file:
-        json.dump(data, file, indent=4)
-
-def get_all_tags(file_path):
-    """Get all unique tags from the questions database"""
-    questions = load_json_db_file(file_path)
-    all_tags = set()
-    
-    for question in questions:
-        if "Tags" in question and question["Tags"]:
-            for tag in question["Tags"]:
-                all_tags.add(tag)
-                
-    return sorted(list(all_tags))
-
-def get_all_documents(file_path):
-    """Get all unique document names from the questions database"""
-    questions = load_json_db_file(file_path)
-    all_documents = set()
-    
-    for question in questions:
-        if "Reference Documents" in question:
-            for doc in question["Reference Documents"]:
-                if "name" in doc and doc["name"]:
-                    all_documents.add(doc["name"])
-                
-    return sorted(list(all_documents))
-
-def add_question(file_path, question_data):
-    """Add a new question to the database"""
-    questions = load_json_db_file(file_path)
-    questions.append(question_data)
-    save_json_db_file(file_path, questions)
-
+# Functions that work directly with question lists
 def get_all_tags_from_list(questions_list):
     """Get all unique tags from the questions list."""
+    if questions_list is None or not isinstance(questions_list, list):
+        return []
+        
     all_tags = set()
     
     for question in questions_list:
@@ -285,6 +229,9 @@ def get_all_tags_from_list(questions_list):
 
 def get_all_documents_from_list(questions_list):
     """Get all unique document names from the questions list."""
+    if questions_list is None or not isinstance(questions_list, list):
+        return []
+        
     all_documents = set()
     
     for question in questions_list:
