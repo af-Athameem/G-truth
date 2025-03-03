@@ -1,22 +1,22 @@
 # Streamlit core library
-streamlit>=1.26.0
+streamlit
 
 # Authentication & Security
-bcrypt>=4.0.1
+bcrypt
 
 # Date & Time utilities
-python-dateutil>=2.8.2
+python-dateutil
 
 # Data Handling
-pandas>=1.5.3
+pandas
 
 # AWS SDK for Python (Used for S3 integration)
-boto3>=1.28.57
-botocore>=1.31.57  # Ensure compatibility with boto3
+boto3
+botocore
 
 # Streamlit UI Components
-streamlit-option-menu>=0.3.2
-requests>=2.31.0  # Used for making API requests
+streamlit-option-menu
+requests
 
 # File Handling & Utilities
 tempfile
