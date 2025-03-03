@@ -37,6 +37,9 @@ if "authenticated" not in st.session_state:
 
 if check_session_timeout():
     st.warning("Your session has expired due to inactivity. Please log in again.")
+
+if st.session_state["authenticated"]:
+    st.switch_page("pages/login.py")
     
 else:
     # Login Form
