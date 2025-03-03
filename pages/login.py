@@ -1,7 +1,5 @@
 import streamlit as st
 
-
-from dotenv import load_dotenv
 from utils.sharepoint import get_access_token, get_site_id
 
 st.set_page_config(initial_sidebar_state="collapsed")
