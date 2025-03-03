@@ -6,12 +6,9 @@ The Ground Truth Benchmark is a Streamlit web application designed to manage a c
 ## Technical Architecture
 ### Components
 
-Frontend: Built with Streamlit
-Authentication: Custom authentication using bcrypt for password hashing
-Storage:
-
-SharePoint integration via Microsoft Graph API
-AWS S3 for file and metadata storage
+- Frontend: Built with Streamlit
+- Authentication: Custom authentication using bcrypt for password hashing
+- Storage: SharePoint integration via Microsoft Graph API + AWS S3 for file and metadata storage
 
 ### File Structure
 
