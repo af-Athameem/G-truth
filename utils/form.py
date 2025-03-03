@@ -27,8 +27,8 @@ def remove_document(index):
         new_pages = {}
         
         for i, doc_idx in enumerate(range(len(st.session_state['reference_docs']))):
-            old_doc_key = f'doc_{doc_idx if doc_idx < idx else doc_idx + 1}'
-            old_pages_key = f'pages_{doc_idx if doc_idx < idx else doc_idx + 1}'
+            old_doc_key = f'doc_{doc_idx if doc_idx < index else doc_idx + 1}'
+            old_pages_key = f'pages_{doc_idx if doc_idx < index else doc_idx + 1}'
             
             if old_doc_key in st.session_state:
                 new_docs[f'doc_{i}'] = st.session_state[old_doc_key]
