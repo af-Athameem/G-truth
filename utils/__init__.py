@@ -35,7 +35,9 @@ from utils.form import (
 from utils.s3 import (
     upload_file, 
     list_files, 
-    file_exists
+    file_exists,
+    read_json_from_s3,
+    write_json_to_s3
 )
 # Define which symbols should be exported with "from utils import *"
 __all__ = [
@@ -68,5 +70,7 @@ __all__ = [
     #s3
     'upload_file', 
     'list_files', 
-    'file_exists'
+    'file_exists',
+    'read_json_from_s3',
+    'write_json_to_s3'
 ]
