@@ -4,13 +4,12 @@ import os
 from botocore.exceptions import ClientError
 import streamlit as st
 
-# Load AWS credentials from Streamlit secrets
+# Load AWS credentials 
 AWS_ACCESS_KEY = st.secrets["aws"]["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_KEY = st.secrets["aws"]["AWS_SECRET_ACCESS_KEY"]
 AWS_REGION = st.secrets["aws"]["AWS_REGION"]
 BUCKET_NAME = st.secrets["aws"]["S3_BUCKET_NAME"]
 
-# Define the folder in S3
 S3_FOLDER = "json-db/"
 
 # Initialize S3 client
