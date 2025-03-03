@@ -12,7 +12,7 @@ The Ground Truth Benchmark is a Streamlit web application designed to manage a c
 
 ### File Structure
 ```
-│ GroundTruthBenchmark/
+GroundTruthBenchmark/
 │── main.py                    # Entry point with login functionality
 │── pages/                      # Streamlit pages directory
 │   │── app.py                 # Main application with question & document management
