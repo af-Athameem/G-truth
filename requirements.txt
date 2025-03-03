@@ -18,11 +18,3 @@ botocore>=1.31.57  # Ensure compatibility with boto3
 streamlit-option-menu>=0.3.2
 requests>=2.31.0  # Used for making API requests
 
-# File Handling & Utilities
-tempfile
-json
-os
-logging
-datetime
-time
-traceback
