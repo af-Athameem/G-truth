@@ -40,7 +40,6 @@ if check_session_timeout():
 # redirect if already logged in
 if st.session_state["authenticated"]:
     st.success(f"Welcome back, {st.session_state['username']}!")
-    # need to ensure SharePoint authentication happens first
     st.switch_page("pages/login.py")
     
 else:
@@ -62,7 +61,7 @@ else:
             else:
                 st.error("Invalid username or password.")
     
-# Logout button (only shows after login)
+# Logout button
 if st.session_state["authenticated"]:
     st.sidebar.header(f"Welcome, {st.session_state['username']}!")
     
