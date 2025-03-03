@@ -8,7 +8,7 @@ from streamlit_option_menu import option_menu
 from utils import (
     # Core functions
     logout, get_document_libraries, get_files_in_eval_benchmark, get_file_item,
-    upload_to_eval_benchmark, load_json_db_file, get_all_tags, add_question,
+    upload_to_eval_benchmark, get_all_tags_from_list, 
     add_document, remove_document, handle_new_tag
 )
 from utils.s3 import upload_file, list_files, file_exists, read_json_from_s3, write_json_to_s3
@@ -26,8 +26,16 @@ logger = logging.getLogger('ground_truth_benchmark')
 # Page configuration
 st.set_page_config(page_title="Ground Truth Benchmark", layout="wide", initial_sidebar_state="expanded")
 
-# Configuration
-QUESTIONS = read_json_from_s3("submitted_questions.json") or []
+# Load questions from S3
+try:
+    QUESTIONS = read_json_from_s3("submitted_questions.json")
+    if QUESTIONS is None or not isinstance(QUESTIONS, list):
+        QUESTIONS = []
+        write_json_to_s3("submitted_questions.json", [])
+except Exception as e:
+    logger.error(f"Error loading questions database: {str(e)}")
+    QUESTIONS = []
+    write_json_to_s3("submitted_questions.json", [])
 
 # Authentication check
 try:
@@ -259,7 +267,7 @@ else:
         st.button("+ ADD DOCUMENT", key="add_doc_btn", on_click=add_document)
 
         # Tags section
-        existing_tags = get_all_tags(QUESTIONS)
+        existing_tags = get_all_tags_from_list(QUESTIONS)
 
         if 'selected_tags' not in st.session_state:
             st.session_state['selected_tags'] = []
@@ -330,7 +338,7 @@ else:
 
                     # Add to database
                     QUESTIONS.append(new_entry)
-                    write_json_to_s3("questions.json", QUESTIONS)
+                    write_json_to_s3("submitted_questions.json", QUESTIONS)
                     
                     st.session_state['form_submitted'] = True
                     st.rerun()
