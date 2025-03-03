@@ -36,7 +36,6 @@ from utils.s3 import (
     write_json_to_s3
 )
 
-# Define which symbols should be exported with "from utils import *"
 __all__ = [
     # Auth functions
     'get_json_db',
