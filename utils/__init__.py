@@ -1,5 +1,7 @@
 # Authentication functions
 from utils.auth import (
+    get_json_db,
+    check_rate_limit,
     authenticate_user,
     check_session_timeout,
     logout,
@@ -42,6 +44,8 @@ from utils.s3 import (
 # Define which symbols should be exported with "from utils import *"
 __all__ = [
     # Auth functions
+    'get_json_db',
+    'check_rate_limit',
     'authenticate_user', 
     'check_session_timeout',
     'logout', 
