@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 import tempfile
+
 from streamlit_option_menu import option_menu
 from utils import (
     logout, get_document_libraries, get_files_in_eval_benchmark, get_file_item,
@@ -213,11 +214,11 @@ else:
         # Document container
         docs_container = st.container()
         with docs_container:
-            for idx, doc in enumerate(st.session_state['reference_docs']):
+            for index, doc in enumerate(st.session_state['reference_docs']):
                 cols = st.columns([4, 1])
                 
                 with cols[0]:
-                    doc_key = f'doc_{idx}'
+                    doc_key = f'doc_{index}'
                     if doc_key not in st.session_state:
                         st.session_state[doc_key] = ""
                         
@@ -228,7 +229,7 @@ else:
                         help="If you do not see your document, please upload one"
                     )
                     
-                    pages_key = f'pages_{idx}'
+                    pages_key = f'pages_{index}'
                     if pages_key not in st.session_state:
                         st.session_state[pages_key] = ""
                         
@@ -238,7 +239,7 @@ else:
                                 )
                 
                 with cols[1]:
-                    if st.button("-", key=f'remove_{idx}', help="Remove this document", on_click=remove_document, args=(idx,)):
+                    if st.button("-", key=f'remove_{index}', help="Remove this document", on_click=remove_document, args=(index,)):
                         pass
         
         # Add document button
