@@ -1,23 +1,50 @@
 import boto3
-import os
-import logging
-from botocore.exceptions import ClientError
+import json
 import streamlit as st
 
 # Load AWS credentials from Streamlit secrets
 AWS_ACCESS_KEY = st.secrets["aws"]["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_KEY = st.secrets["aws"]["AWS_SECRET_ACCESS_KEY"]
 AWS_REGION = st.secrets["aws"]["AWS_REGION"]
+BUCKET_NAME = st.secrets["aws"]["S3_BUCKET_NAME"]
 
-bucket_name = "af-ground-truth-benchmark"
+# Define the folder in S3
+S3_FOLDER = "json-db/"
 
-session = boto3.Session(
+# Initialize S3 client
+s3_client = boto3.client(
+    "s3",
     aws_access_key_id=AWS_ACCESS_KEY,
     aws_secret_access_key=AWS_SECRET_KEY,
     region_name=AWS_REGION
 )
 
-s3_client = session.client("s3")
+# Function to read JSON from S3
+def read_json_from_s3(file_name):
+    s3_key = f"{S3_FOLDER}{file_name}"  # Store JSON inside "json-db/" folder
+    try:
+        response = s3_client.get_object(Bucket=BUCKET_NAME, Key=s3_key)
+        return json.loads(response["Body"].read().decode("utf-8"))
+    except Exception as e:
+        st.error(f"Error reading {s3_key} from S3: {str(e)}")
+        return {}
+
+# Function to write JSON to S3
+def write_json_to_s3(file_name, data):
+    s3_key = f"{S3_FOLDER}{file_name}"  # Store JSON inside "json-db/" folder
+    try:
+        s3_client.put_object(
+            Bucket=BUCKET_NAME,
+            Key=s3_key,
+            Body=json.dumps(data, indent=4)
+        )
+        st.success(f"Successfully updated {s3_key} in S3!")
+    except Exception as e:
+        st.error(f"Error writing {s3_key} to S3: {str(e)}")
+
+# Load JSON files
+users = read_json_from_s3("users.json")
+questions = read_json_from_s3("submitted_questions.json")
 
 def upload_file(file_path, target_filename=None, bucket=bucket_name):
     """
