@@ -59,6 +59,13 @@ def check_session_timeout():
     st.session_state["last_activity"] = time.time()
     return False
 
+# Check Login Status
+def check_login():
+    """Redirects users to the login page if they are not authenticated."""
+    if "authenticated" not in st.session_state or not st.session_state["authenticated"]:
+        st.warning("Please log in first.")
+        st.switch_page("main.py")
+
 # User Authentication Function
 def authenticate_user(username, password):
     """Authenticate a user by checking stored credentials in S3."""
