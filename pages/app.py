@@ -28,7 +28,7 @@ if "authenticated" not in st.session_state or not st.session_state["authenticate
     st.warning("Please log in first.")
     st.switch_page("pages/login.py")
 
-# Apply custom styling
+# CSS
 st.markdown("""
     <style>
         .main { background-color: #f4f4f9; }
