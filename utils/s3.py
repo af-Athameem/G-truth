@@ -46,7 +46,7 @@ def write_json_to_s3(file_name, data):
 users = read_json_from_s3("users.json")
 questions = read_json_from_s3("submitted_questions.json")
 
-def upload_file(file_path, target_filename=None, bucket=bucket_name):
+def upload_file(file_path, target_filename=None, bucket=BUCKET_NAME):
     """
     Upload a file to an S3 bucket.
 
@@ -68,7 +68,7 @@ def upload_file(file_path, target_filename=None, bucket=bucket_name):
         logging.error(e)
         return False
 
-def list_files(prefix="", bucket=bucket_name):
+def list_files(prefix="", bucket=BUCKET_NAME):
     """
     List all file names in an S3 bucket, optionally filtered by a prefix.
 
@@ -90,7 +90,7 @@ def list_files(prefix="", bucket=bucket_name):
         logging.error(e)
         return []
 
-def file_exists(file_name, bucket=bucket_name):
+def file_exists(file_name, bucket=BUCKET_NAME):
     """
     Check if a file exists in an S3 bucket.
 
