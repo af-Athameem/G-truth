@@ -2,12 +2,8 @@ import streamlit as st
 import time
 import datetime
 import bcrypt
-import logging
 from utils.s3 import read_json_from_s3, write_json_to_s3
 
-logger = logging.getLogger('auth')
-
-# Rate limiting storage
 failed_attempts = {}
 RATE_LIMIT_MAX_ATTEMPTS = 5
 RATE_LIMIT_WINDOW = 300  # 5 minutes
@@ -22,8 +18,7 @@ def get_json_db():
         if "users" not in data:
             data = {"users": data} if isinstance(data, dict) else {"users": {}}
         return data
-    except Exception as e:
-        logger.error(f"Error retrieving user database: {str(e)}")
+    except Exception:
         return {"users": {}}
 
 def check_rate_limit(username):
@@ -96,7 +91,6 @@ def authenticate_user(username, password):
         user_data = json_db["users"][username]
         
         if "password_hash" not in user_data:
-            logger.error(f"User {username} exists but has no password hash")
             record_failed_attempt(username)
             return False
             
@@ -110,13 +104,11 @@ def authenticate_user(username, password):
             else:
                 record_failed_attempt(username)
                 return False
-        except Exception as e:
-            logger.error(f"Password verification error for user {username}: {str(e)}")
+        except Exception:
             record_failed_attempt(username)
             return False
             
-    except Exception as e:
-        logger.error(f"Authentication error: {str(e)}")
+    except Exception:
         return False
 
 def logout():
